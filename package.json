@@ -7,7 +7,8 @@
     "start": "cross-env NODE_ENV=production node backend/server.js",
     "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon backend/server.js",
-    "client": "npm run dev --prefix frontend"
+    "client": "npm run dev --prefix frontend",
+    "seed:services": "node backend/scripts/seed.services.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

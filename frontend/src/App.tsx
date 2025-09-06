@@ -8,8 +8,12 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
-import ProfileCard from "@/pages/profile/ProfileCard";
-import ProfileEdit from "@/pages/profile/ProfileEdit";
+import ProfileCard from "@/pages/profile/profileCard";
+import ProfileEdit from "@/pages/profile/profileEdit";
+import ServiceSelect from "@/pages/orders/ServiceSelect";
+import ScheduleSelect from "@/pages/orders/ScheduleSelect";
+import OrderReview from "@/pages/orders/OrderReview";
+import MyOrders from "@/pages/orders/MyOrders";
 
 // --- Example Layout Components ---
 import SiteHeader from "@/components/site/SiteHeader";
@@ -43,6 +47,11 @@ const router = createBrowserRouter([
   // --- Protected Route ---
   { path: "/profile", element: <AppLayout><ProtectedRoute><ProfileCard /></ProtectedRoute></AppLayout> },
   { path: "/profile/edit", element: <AppLayout><ProtectedRoute><ProfileEdit /></ProtectedRoute></AppLayout> },
+  // --- Booking Flow ---
+  { path: "/orders", element: <AppLayout><ProtectedRoute><MyOrders /></ProtectedRoute></AppLayout> },
+  { path: "/orders/new/service", element: <AppLayout><ProtectedRoute><ServiceSelect /></ProtectedRoute></AppLayout> },
+  { path: "/orders/new/schedule", element: <AppLayout><ProtectedRoute><ScheduleSelect /></ProtectedRoute></AppLayout> },
+  { path: "/orders/new/review", element: <AppLayout><ProtectedRoute><OrderReview /></ProtectedRoute></AppLayout> },
 ]);
 
 // --- App Root ---

@@ -1,119 +1,81 @@
-import { Link, useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Link, useNavigate } from "react-router"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAppDispatch, useAppSelector } from "@/state/store";
-import { logout } from "@/state/slices/authSlice";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAppDispatch, useAppSelector } from "@/state/store"
+import { logout } from "@/state/slices/authSlice"
+import { Bell, ChevronDown, Wallet as WalletIcon } from "lucide-react"
 
-// Simple, responsive site header built with shadcn/ui buttons and semantic
-// markup. The navigation links point to on-page sections; primary actions link
-// to auth and the order flow.
+// SiteHeader now reuses the Home dashboard navbar and wires actions.
 export default function SiteHeader() {
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const isAuthed = useAppSelector((s) => Boolean(s.auth.token));
-    const user = useAppSelector((s) => s.auth.user);
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const isAuthed = useAppSelector((s) => Boolean(s.auth.token))
+  const user = useAppSelector((s) => s.auth.user)
 
-    const onLogout = () => {
-        dispatch(logout());
-        navigate("/", { replace: true });
-    };
+  const onLogout = () => {
+    dispatch(logout())
+    navigate("/", { replace: true })
+  }
 
-    return (
-        <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/90 backdrop-blur">
-            <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
-                {/* Brand */}
-                <Link to="/" className="flex items-center gap-2 font-semibold">
-                    <div className="grid h-6 w-6 place-items-center rounded bg-black text-white text-xs">
-                        A
-                    </div>
-                    <span>app</span>
-                </Link>
+  return (
+    <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur">
+      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center gap-3 px-4">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-teal-600 text-white font-semibold">L</div>
+          <span className="hidden text-base font-semibold sm:inline">Laundrify</span>
+        </Link>
 
-                {/* Primary nav (anchors to sections in the page) */}
-                <nav className="hidden md:flex items-center gap-6 text-sm text-gray-700">
-                    <a href="#services" className="hover:text-black">
-                        Services
-                    </a>
-                    <a href="#pricing" className="hover:text-black">
-                        Pricing
-                    </a>
-                    <Link to="/orders" className="hover:text-black">
-                        Track Order
-                    </Link>
-                    <a href="#about" className="hover:text-black">
-                        About
-                    </a>
-                    <a href="#contact" className="hover:text-black">
-                        Contact
-                    </a>
-                </nav>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2">
-                    {isAuthed ? (
-                        <>
-                            <Link to="/orders">
-                                <Button variant="outline">My Orders</Button>
-                            </Link>
-                            <Link to="/orders/new/service">
-                                <Button>Book Now</Button>
-                            </Link>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Avatar className="cursor-pointer">
-                                        {/* If you later add avatar URLs, place them here */}
-                                        <AvatarImage
-                                            src={undefined as any}
-                                            alt={user?.name || "User"}
-                                        />
-                                        <AvatarFallback>
-                                            {(user?.name || user?.number || "U")
-                                                .slice(0, 1)
-                                                .toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56">
-                                    <DropdownMenuLabel className="font-normal">
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium leading-none">
-                                                {user?.name || "User"}
-                                            </span>
-                                            {user?.number ? (
-                                                <span className="text-xs text-muted-foreground">
-                                                    {user.number}
-                                                </span>
-                                            ) : null}
-                                        </div>
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onSelect={() => navigate("/profile")}>
-                                        Profile
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem variant="destructive" onSelect={onLogout}>
-                                        Logout
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </>
-                    ) : (
-                        <>
-                            <Link to="/login">
-                                <Button variant="outline">Sign In</Button>
-                            </Link>
-                        </>
-                    )}
-                </div>
+        <div className="ml-auto hidden items-center gap-3 md:flex">
+          {isAuthed && (
+            <div className="flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-sm">
+              <WalletIcon className="h-4 w-4" />
+              <span className="font-medium">SAR 140.00</span>
             </div>
-        </header>
-    );
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Notifications"
+            onClick={() => navigate(isAuthed ? "/orders" : "/login")}
+          >
+            <Bell className="h-5 w-5" />
+          </Button>
+          {isAuthed ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2">
+                  <Avatar className="h-7 w-7">
+                    <AvatarImage alt="User avatar" />
+                    <AvatarFallback>
+                      {(user?.name || user?.number || "U").slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={() => navigate("/profile")}>Profile</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate("/profile/edit")}>Settings</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onSelect={onLogout}>Sign out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/login">
+              <Button>Sign in</Button>
+            </Link>
+          )}
+        </div>
+      </div>
+    </header>
+  )
 }

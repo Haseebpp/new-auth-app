@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import { fetchOrders, selectOrders, selectOrdersStatus, cancelOrder } from "@/state/slices/ordersSlice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +23,12 @@ export default function MyOrders() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">My Orders</h1>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">My Orders</h1>
+        <Link to="/orders/new/service">
+          <Button>New Order</Button>
+        </Link>
+      </div>
       {status === "loading" && <div>Loading...</div>}
       <div className="grid gap-4">
         {orders.map((o) => {
@@ -53,7 +59,12 @@ export default function MyOrders() {
           );
         })}
         {status === "succeeded" && orders.length === 0 && (
-          <div className="text-gray-600">No orders yet. Book your first order from the home page.</div>
+          <div className="text-gray-600 flex items-center gap-3">
+            <span>No orders yet.</span>
+            <Link to="/orders/new/service">
+              <Button size="sm">New Order</Button>
+            </Link>
+          </div>
         )}
       </div>
     </div>

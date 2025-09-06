@@ -32,7 +32,7 @@ export default function Login() {
         | Record<string, string>
         | null;
     const fieldErrors: Record<string, string> | undefined = errData && ("errors" in errData ? (errData as any).errors : (errData as any));
-    const topMessage = typeof error === "string" ? error : (errData as any)?.message;
+    // top message computed from error if needed in future
 
     return (
         <div className="grid place-items-center min-h-screen p-4">

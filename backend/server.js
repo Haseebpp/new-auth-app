@@ -10,6 +10,8 @@
 
     // Import your routes here
     import authRoutes from "./routes/auth.routes.js";
+    import servicesRoutes from "./routes/services.routes.js";
+    import ordersRoutes from "./routes/orders.routes.js";
 
     // -----------------------
     // Load environment variables
@@ -53,6 +55,8 @@
     // API Routes
     // -----------------------
     app.use("/api/auth", authRoutes);
+    app.use("/api/services", servicesRoutes);
+    app.use("/api/orders", ordersRoutes);
 
     // -----------------------
     // Error Handling Middleware

@@ -1,194 +1,312 @@
-import { useEffect } from "react";
-import { Link } from "react-router";
-import { useAppDispatch, useAppSelector } from "@/state/store";
-import { fetchMe } from "@/state/slices/authSlice";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import React from "react"
+import { Link } from "react-router"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Separator } from "@/components/ui/separator"
+import {
+  Home,
+  Package,
+  Wallet as WalletIcon,
+  Headphones,
+  User2,
+  ChevronDown,
+  MapPin,
+  Truck,
+  ShieldCheck,
+  Leaf,
+  Timer,
+  Gift,
+  CreditCard,
+} from "lucide-react"
 
-// Homepage (marketing) replacing the previous dashboard screen.
-// Built with shadcn/ui primitives and Tailwind classes for layout only.
-// The structure follows your screenshots: hero → service dashboard → services
-// grid → how it works → testimonial → footer.
-export default function Home() {
-    const { token, user } = useAppSelector((s) => s.auth);
-    const dispatch = useAppDispatch();
+/**
+ * Laundry Web Dashboard — Home Screen
+ * - Responsive 3-column layout: Sidebar | Main | Right rail
+ * - Matches the spec you used to generate the 16:9 concept
+ * - Uses shadcn/ui + Tailwind + lucide-react icons
+ */
 
-    // Try to hydrate the session quietly if a token exists
-    useEffect(() => {
-        if (token && !user) dispatch(fetchMe());
-    }, [token]);
+export default function LaundryDashboardHome() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
 
+      {/* Body */}
+      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[240px_1fr_360px]">
+        {/* Sidebar */}
+        <aside className="hidden lg:block">
+          <nav className="sticky top-16 flex flex-col gap-1">
+            <SidebarItem icon={Home} label="Home" active />
+            <SidebarItem icon={Package} label="Orders" to="/orders" />
+            <SidebarItem icon={CreditCard} label="Subscriptions" />
+            <SidebarItem icon={WalletIcon} label="Wallet" />
+            <SidebarItem icon={Headphones} label="Support" />
+            <SidebarItem icon={User2} label="Profile" />
+          </nav>
+        </aside>
+
+        {/* Main column */}
+        <main className="flex min-h-[calc(100vh-8rem)] flex-col gap-4">
+          {/* Location + quick search (mobile-visible) */}
+          <div className="flex items-center justify-between gap-3 lg:hidden">
+            <Button variant="outline" className="gap-2 rounded-xl">
+              <MapPin className="h-4 w-4" /> Home — Riyadh <ChevronDown className="h-4 w-4" />
+            </Button>
+            <div className="flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-sm">
+              <WalletIcon className="h-4 w-4" />
+              <span className="font-medium">SAR 140.00</span>
+            </div>
+          </div>
+
+          {/* Hero banner */}
+          <Card className="overflow-hidden rounded-2xl border-teal-100 bg-teal-50">
+            <CardContent className="grid gap-6 p-6 md:grid-cols-[1fr_280px]">
+              <div className="flex flex-col gap-4">
+                <div className="text-2xl font-semibold md:text-3xl">
+                  Pickup in <span className="text-teal-700">2h</span> • Delivery <span className="text-teal-700">&lt; 24h</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="secondary" className="gap-1 rounded-full border bg-white text-slate-700">
+                    <ShieldCheck className="h-4 w-4 text-teal-600" /> Sealed Bag
+                  </Badge>
+                  <Badge variant="secondary" className="gap-1 rounded-full border bg-white text-slate-700">
+                    <ShieldCheck className="h-4 w-4 text-teal-600" /> Non‑mixed Loads
+                  </Badge>
+                  <Badge variant="secondary" className="gap-1 rounded-full border bg-white text-slate-700">
+                    <Leaf className="h-4 w-4 text-emerald-600" /> Eco Wash
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <Button asChild className="rounded-xl bg-teal-600 hover:bg-teal-700">
+                    <Link to="/orders/new/service">Schedule Pickup</Link>
+                  </Button>
+                  <Button variant="outline" className="rounded-xl">Subscriptions</Button>
+                </div>
+              </div>
+
+              {/* Illustration placeholder */}
+              <div className="relative hidden h-40 items-center justify-center md:flex">
+                <LaundryIllustration />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick actions & price row */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-base">Schedule</CardTitle>
+                <CardDescription>Book a new pickup</CardDescription>
+              </CardHeader>
+              <CardContent className="flex items-end justify-between">
+                <div className="text-2xl font-semibold">SAR 6</div>
+                <Truck className="h-7 w-7 text-teal-600" />
+              </CardContent>
+              <CardFooter>
+                <Button asChild variant="ghost" className="gap-2 rounded-xl px-0 text-teal-700 hover:bg-teal-50">
+                  <Link to="/orders/new/service">
+                    Schedule Pickup <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-base">Subscriptions</CardTitle>
+                <CardDescription>Weekly or monthly plans</CardDescription>
+              </CardHeader>
+              <CardContent className="flex items-end justify-between">
+                <div className="text-2xl font-semibold">SAR 65</div>
+                <CreditCard className="h-7 w-7 text-teal-600" />
+              </CardContent>
+              <CardFooter>
+                <Button variant="ghost" className="gap-2 rounded-xl px-0 text-teal-700 hover:bg-teal-50">
+                  Explore Plans <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+                </Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-base">Bundles</CardTitle>
+                <CardDescription>Save with curated sets</CardDescription>
+              </CardHeader>
+              <CardContent className="flex items-end justify-between">
+                <div className="text-2xl font-semibold">SAR 9</div>
+                <Gift className="h-7 w-7 text-teal-600" />
+              </CardContent>
+              <CardFooter>
+                <Button variant="ghost" className="gap-2 rounded-xl px-0 text-teal-700 hover:bg-teal-50">
+                  View Bundles <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+
+          <Card className="rounded-2xl">
+            <CardContent className="grid gap-4 p-4 sm:grid-cols-3">
+              <PriceCard label="Thobe" price="SAR 6" icon={<ShirtIcon />} />
+              <PriceCard label="Standard Wash (6kg)" price="SAR 65" icon={<WashIcon />} />
+              <PriceCard label="Abaya" price="SAR 9" icon={<AbayaIcon />} />
+            </CardContent>
+          </Card>
+        </main>
+
+        {/* Right rail */}
+        <aside className="flex flex-col gap-4">
+          {/* Active Order Tracker */}
+          <Card className="rounded-2xl">
+            <CardHeader>
+              <CardTitle className="text-base">Active Order</CardTitle>
+              <CardDescription>Order #A41X • Today</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Step label="Pickup" done />
+              <Step label="Processing" active />
+              <Step label="QC" />
+              <Step label="Delivery" />
+              <Step label="Done" />
+              <Separator />
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-1 text-slate-600"><Timer className="h-4 w-4" /> ETA</span>
+                <span className="font-medium">Today, 2:30 pm</span>
+              </div>
+            </CardContent>
+            <CardFooter className="gap-2">
+              <Button className="rounded-xl" variant="outline">Contact Driver</Button>
+              <Button className="rounded-xl" variant="default">Support Chat</Button>
+            </CardFooter>
+          </Card>
+
+          {/* Loyalty & Referral */}
+          <Card className="rounded-2xl">
+            <CardHeader>
+              <CardTitle className="text-base">Wallet & Loyalty</CardTitle>
+              <CardDescription>Balance • Referrals • Tier</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-slate-600">Wallet Balance</div>
+                <div className="text-lg font-semibold">SAR 140.00</div>
+              </div>
+              <div>
+                <div className="mb-1 flex items-center justify-between text-sm">
+                  <span>Tier: <span className="font-medium">Silver</span></span>
+                  <span>Next: Gold</span>
+                </div>
+                <Progress value={45} className="h-2" />
+              </div>
+              <Button className="w-full rounded-xl" variant="secondary"><Gift className="mr-2 h-4 w-4" /> Invite & Earn 25 SAR</Button>
+            </CardContent>
+          </Card>
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+/* ---------------------------- UI Subcomponents ---------------------------- */
+
+function SidebarItem({ icon: Icon, label, active = false, to, onClick }: { icon: any; label: string; active?: boolean; to?: string; onClick?: () => void }) {
+  const classes = `justify-start gap-3 rounded-xl ${active ? "bg-teal-50 text-teal-800" : "text-slate-700 hover:bg-slate-50"}`
+  if (to) {
     return (
-        <div id="home" className="min-h-screen bg-white text-gray-900">
-            {/* Hero */}
-            <section className="mx-auto max-w-6xl px-4 pt-16 pb-14 text-center">
-                <h1 className="text-4xl md:text-6xl font-semibold tracking-tight">
-                    Professional <span className="italic">laundry</span> and dry cleaning
-                    <br /> at your doorstep
-                </h1>
-                <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-                    Premium cleaning services with convenient pickup and delivery. Your clothes deserve the best care.
-                </p>
-                <div className="mt-6 flex items-center justify-center gap-3">
-                    <a href="#how">
-                        <Button variant="outline">How it works</Button>
-                    </a>
-                    <Link to="/orders/new/service">
-                        <Button>Book service now</Button>
-                    </Link>
-                </div>
-            </section>
+      <Button asChild variant={active ? "secondary" : "ghost"} className={classes}>
+        <Link to={to}>
+          <Icon className="h-5 w-5" /> {label}
+        </Link>
+      </Button>
+    )
+  }
+  return (
+    <Button
+      variant={active ? "secondary" : "ghost"}
+      className={classes}
+      onClick={onClick}
+    >
+      <Icon className="h-5 w-5" /> {label}
+    </Button>
+  )
+}
 
-            {/* Service Dashboard preview (cards + quick stats) */}
-            <section className="mx-auto max-w-6xl px-4 pb-20">
-                <Card className="border-gray-200 bg-white">
-                    <CardHeader>
-                        <CardTitle>Service Dashboard</CardTitle>
-                        <p className="text-sm text-gray-600">Track your orders and schedule new services</p>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {[
-                                { title: "Dry Cleaning", subtitle: "Professional care", price: "From $8.99" },
-                                { title: "Wash & Fold", subtitle: "Everyday cleaning", price: "From $2.99/lb", color: "text-green-600" },
-                                { title: "Express Service", subtitle: "24-hour turnaround", price: "+50% fee", color: "text-orange-500" },
-                            ].map((s) => (
-                                <Card key={s.title} className="bg-gray-50 border-gray-200">
-                                    <CardContent className="pt-6">
-                                        <div className="font-medium">{s.title}</div>
-                                        <div className="text-xs text-gray-600">{s.subtitle}</div>
-                                        <p className={`mt-3 text-sm font-semibold ${s.color ?? "text-purple-700"}`}>{s.price}</p>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                        <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
-                            <div>
-                                <div className="text-2xl font-semibold">24h</div>
-                                <div className="text-xs text-gray-600">Avg Turnaround</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl font-semibold text-green-600">99%</div>
-                                <div className="text-xs text-gray-600">Customer Satisfaction</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl font-semibold">Free</div>
-                                <div className="text-xs text-gray-600">Pickup & Delivery</div>
-                            </div>
-                        </div>
+function Step({ label, active, done }: { label: string; active?: boolean; done?: boolean }) {
+  const state = done ? "bg-teal-600" : active ? "bg-teal-400" : "bg-slate-200"
+  return (
+    <div className="flex items-center gap-3">
+      <span className={`h-2.5 w-2.5 rounded-full ${state}`} />
+      <span className={`text-sm ${done ? "text-slate-500 line-through" : active ? "font-medium" : "text-slate-700"}`}>{label}</span>
+    </div>
+  )
+}
 
-                        <div className="mt-8 flex justify-end">
-                            <Badge className="cursor-default">Pickup Today 2PM</Badge>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-
-            {/* Services grid */}
-            <section id="services" aria-labelledby="services-heading" className="mx-auto max-w-6xl px-4 pb-16">
-                <h2 id="services-heading" className="text-center text-4xl md:text-5xl font-semibold">
-                    Complete laundry <span className="italic">solutions</span> for your lifestyle
-                </h2>
-                <p className="mt-3 text-center text-gray-600 max-w-2xl mx-auto">
-                    From everyday wash & fold to specialized dry cleaning, we handle all your garment care needs
-                </p>
-
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[
-                        { title: "Dry Cleaning", price: "From $8.99", bullets: ["Delicate fabric care", "Stain removal", "Press & finish", "Same-day available"] },
-                        { title: "Wash & Fold", price: "From $2.99/lb", bullets: ["Everyday clothes", "Fresh scent", "Folded & packaged", "24-48 hour turnaround"] },
-                        { title: "Ironing Service", price: "From $4.99", bullets: ["Professional pressing", "Wrinkle removal", "Crisp finish", "Hanging ready"] },
-                        { title: "Express Service", price: "+50% fee", bullets: ["Same-day delivery", "Priority handling", "Rush orders", "Emergency service"], priceColor: "text-purple-700" },
-                    ].map((svc) => (
-                        <Card key={svc.title} className="bg-gray-50 border-gray-200">
-                            <CardContent className="pt-6">
-                                <div className="font-semibold">{svc.title}</div>
-                                <div className={`text-sm font-semibold mt-2 ${svc.priceColor ?? "text-purple-700"}`}>{svc.price}</div>
-                                <ul className="mt-4 text-sm text-gray-700 space-y-1">
-                                    {svc.bullets.map((b) => (
-                                        <li key={b}>• {b}</li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-
-                <div className="mt-8 text-center">
-                    <Link to="/orders/new/service">
-                        <Button>Book your service now</Button>
-                    </Link>
-                </div>
-            </section>
-
-            {/* How it works */}
-            <section id="how" className="mx-auto max-w-6xl px-4 pb-16">
-                <h2 className="text-center text-4xl font-semibold">How it <span className="italic">works</span></h2>
-                <p className="mt-3 text-center text-gray-600 max-w-2xl mx-auto">
-                    Simple, convenient, and reliable. Get your laundry done in just 4 easy steps.
-                </p>
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-                    {[
-                        { step: 1, title: "Schedule Pickup", desc: "Choose your preferred pickup time and location." },
-                        { step: 2, title: "We Collect", desc: "Driver arrives to collect your garments safely." },
-                        { step: 3, title: "Expert Cleaning", desc: "Eco-friendly processes and premium care." },
-                        { step: 4, title: "Fresh Delivery", desc: "Clean, pressed clothes delivered to your door." },
-                    ].map((i) => (
-                        <Card key={i.step} className="bg-gray-50 border-gray-200">
-                            <CardContent className="pt-6">
-                                <div className="text-xs text-gray-600">Step {i.step}</div>
-                                <div className="font-medium mt-1">{i.title}</div>
-                                <p className="text-sm text-gray-700 mt-2">{i.desc}</p>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-
-                {/* CTA panel */}
-                <Card className="mt-8 border-gray-200 bg-gray-50">
-                    <CardContent className="py-8 px-6 grid gap-4 md:grid-cols-2 items-center">
-                        <div>
-                            <div className="text-xl font-semibold">See it in action</div>
-                            <p className="text-sm text-gray-600 mt-2">
-                                Watch how our seamless pickup and delivery process works. From scheduling to doorstep delivery, we make laundry effortless.
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-3 md:justify-end">
-                            <Link to="/orders/new/service">
-                                <Button>Start your first order</Button>
-                            </Link>
-                            <a href="#about">
-                                <Button variant="outline">Learn more</Button>
-                            </a>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-
-            {/* Testimonial */}
-            <section id="about" className="mx-auto max-w-6xl px-4 pb-20">
-                <Card className="border-gray-200 bg-white">
-                    <CardContent className="p-6 md:p-10 grid gap-6 md:grid-cols-[1fr_320px] items-center">
-                        <blockquote className="text-xl md:text-2xl leading-relaxed">
-                            <div className="text-purple-700 mb-2">★★★★★</div>
-                            "App has been a game-changer. Their attention to detail is outstanding."
-                            <footer className="mt-4 text-sm text-gray-600">
-                                <div className="font-medium text-gray-900">Sarah Williams</div>
-                                Marketing Director, Regular Customer
-                            </footer>
-                        </blockquote>
-                        {/* Placeholder image block. Replace with actual image as needed. */}
-                        <div className="aspect-square rounded-xl bg-gray-100" />
-                    </CardContent>
-                </Card>
-            </section>
-
-            <section id="contact" className="mx-auto max-w-6xl px-4 pb-10">
-                <p className="text-center text-sm text-gray-600">
-                    Have questions? Reach us at <a className="underline" href="mailto:support@app.com">support@app.com</a>
-                </p>
-            </section>
+function PriceCard({ label, price, icon }: { label: string; price: string; icon: React.ReactNode }) {
+  return (
+    <Card className="rounded-xl">
+      <CardContent className="flex items-center justify-between gap-4 p-4">
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-slate-100">{icon}</div>
+          <div>
+            <div className="text-sm text-slate-600">{label}</div>
+            <div className="text-base font-semibold">{price}</div>
+          </div>
         </div>
-    );
+        <Button variant="ghost" className="rounded-xl">Add</Button>
+      </CardContent>
+    </Card>
+  )
+}
+
+/* Simple placeholder SVGs so the page looks complete without external images */
+function LaundryIllustration() {
+  return (
+    <svg viewBox="0 0 240 140" className="h-full w-full" aria-hidden>
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1">
+          <stop offset="0%" stopColor="#99f6e4" />
+          <stop offset="100%" stopColor="#5eead4" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="20" width="240" height="100" rx="16" fill="url(#g1)" opacity="0.2" />
+      <g transform="translate(40,30)">
+        <rect width="160" height="80" rx="14" fill="#0d9488" opacity="0.15" />
+        <rect x="10" y="10" width="140" height="60" rx="12" fill="#14b8a6" opacity="0.25" />
+        <circle cx="60" cy="40" r="18" fill="#0ea5a4" opacity="0.45" />
+        <circle cx="100" cy="40" r="18" fill="#0ea5a4" opacity="0.35" />
+      </g>
+    </svg>
+  )
+}
+
+function ShirtIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M9 3l3 2 3-2 3 3-3 2v11H9V8L6 6l3-3z" />
+    </svg>
+  )
+}
+
+function WashIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M3 6h18l-1 12H4L3 6z" />
+      <path d="M7 10c1.5 1 3 1 4.5 0S15 9 17 10" />
+    </svg>
+  )
+}
+
+function AbayaIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M9 3h6l3 8-3 10H9L6 11 9 3z" />
+    </svg>
+  )
 }
