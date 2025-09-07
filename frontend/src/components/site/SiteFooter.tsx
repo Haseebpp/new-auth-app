@@ -1,40 +1,32 @@
-import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-// Footer with a simple brand, quick links, and legal row.
-// Uses only semantic HTML and tailwind utility classes for layout;
-// no external component dependencies required here.
+// Footer replaced to match the provided design snippet
 export default function SiteFooter() {
-    return (
-        <footer className="border-t border-gray-200 bg-white">
-            <div className="mx-auto max-w-6xl px-4 py-10">
-                <div className="flex flex-col items-center gap-6">
-                    {/* Brand */}
-                    <div className="flex items-center gap-2">
-                        <div className="grid h-6 w-6 place-items-center rounded bg-black text-white text-xs">A</div>
-                        <span className="font-semibold">APP</span>
-                    </div>
-
-                    {/* Quick links */}
-                    <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-700">
-                        <a href="#home" className="hover:text-black">Home</a>
-                        <a href="#services" className="hover:text-black">Services</a>
-                        <a href="#pricing" className="hover:text-black">Pricing</a>
-                        <Link to="/orders" className="hover:text-black">Track Order</Link>
-                        <a href="#about" className="hover:text-black">About</a>
-                        <a href="#contact" className="hover:text-black">Contact</a>
-                    </nav>
-
-                    {/* Legal */}
-                    <div className="flex w-full items-center justify-between text-xs text-gray-500">
-                        <p>© 2024 APP. All rights reserved.</p>
-                        <div className="flex items-center gap-4">
-                            <a href="#terms" className="hover:text-black">Terms</a>
-                            <a href="#privacy" className="hover:text-black">Privacy</a>
-                            <a href="#cookies" className="hover:text-black">Cookies</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    );
+  return (
+    <footer className="border-t py-8">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold">Need help?</h3>
+          <p className="text-sm text-slate-600">
+            Check FAQs or reach out on chat/WhatsApp. Rewash within 48h if you’re not satisfied.
+          </p>
+          <div className="flex gap-2 pt-1">
+            <Button variant="secondary">Open FAQ</Button>
+            <Button variant="outline">Contact Support</Button>
+          </div>
+        </div>
+        <div className="grid gap-3 md:justify-end">
+          <Label htmlFor="email" className="text-sm">
+            Get updates
+          </Label>
+          <div className="flex max-w-sm items-center gap-2">
+            <Input id="email" placeholder="you@example.com" />
+            <Button className="bg-teal-600 hover:bg-teal-700">Subscribe</Button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }

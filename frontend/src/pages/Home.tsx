@@ -12,21 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
-import {
-  Home,
-  Package,
-  Wallet as WalletIcon,
-  Headphones,
-  User2,
-  ChevronDown,
-  MapPin,
-  Truck,
-  ShieldCheck,
-  Leaf,
-  Timer,
-  Gift,
-  CreditCard,
-} from "lucide-react"
+import { Wallet as WalletIcon, ChevronDown, MapPin, Truck, ShieldCheck, Leaf, Timer, Gift, CreditCard } from "lucide-react"
 
 /**
  * Laundry Web Dashboard — Home Screen
@@ -37,24 +23,9 @@ import {
 
 export default function LaundryDashboardHome() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
-
-      {/* Body */}
-      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[240px_1fr_360px]">
-        {/* Sidebar */}
-        <aside className="hidden lg:block">
-          <nav className="sticky top-16 flex flex-col gap-1">
-            <SidebarItem icon={Home} label="Home" active />
-            <SidebarItem icon={Package} label="Orders" to="/orders" />
-            <SidebarItem icon={CreditCard} label="Subscriptions" />
-            <SidebarItem icon={WalletIcon} label="Wallet" />
-            <SidebarItem icon={Headphones} label="Support" />
-            <SidebarItem icon={User2} label="Profile" />
-          </nav>
-        </aside>
-
-        {/* Main column */}
-        <main className="flex min-h-[calc(100vh-8rem)] flex-col gap-4">
+    <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+      {/* Main column */}
+      <main className="flex min-h-[calc(100vh-8rem)] flex-col gap-4">
           {/* Location + quick search (mobile-visible) */}
           <div className="flex items-center justify-between gap-3 lg:hidden">
             <Button variant="outline" className="gap-2 rounded-xl">
@@ -88,7 +59,9 @@ export default function LaundryDashboardHome() {
                   <Button asChild className="rounded-xl bg-teal-600 hover:bg-teal-700">
                     <Link to="/orders/new/service">Schedule Pickup</Link>
                   </Button>
-                  <Button variant="outline" className="rounded-xl">Subscriptions</Button>
+                  <Button asChild variant="outline" className="rounded-xl">
+                    <Link to="/subscriptions">Subscriptions</Link>
+                  </Button>
                 </div>
               </div>
 
@@ -129,8 +102,10 @@ export default function LaundryDashboardHome() {
                 <CreditCard className="h-7 w-7 text-teal-600" />
               </CardContent>
               <CardFooter>
-                <Button variant="ghost" className="gap-2 rounded-xl px-0 text-teal-700 hover:bg-teal-50">
-                  Explore Plans <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+                <Button asChild variant="ghost" className="gap-2 rounded-xl px-0 text-teal-700 hover:bg-teal-50">
+                  <Link to="/subscriptions">
+                    Explore Plans <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+                  </Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -159,10 +134,10 @@ export default function LaundryDashboardHome() {
               <PriceCard label="Abaya" price="SAR 9" icon={<AbayaIcon />} />
             </CardContent>
           </Card>
-        </main>
+      </main>
 
-        {/* Right rail */}
-        <aside className="flex flex-col gap-4">
+      {/* Right rail */}
+      <aside className="flex flex-col gap-4">
           {/* Active Order Tracker */}
           <Card className="rounded-2xl">
             <CardHeader>
@@ -208,35 +183,12 @@ export default function LaundryDashboardHome() {
               <Button className="w-full rounded-xl" variant="secondary"><Gift className="mr-2 h-4 w-4" /> Invite & Earn 25 SAR</Button>
             </CardContent>
           </Card>
-        </aside>
-      </div>
+      </aside>
     </div>
   )
 }
 
 /* ---------------------------- UI Subcomponents ---------------------------- */
-
-function SidebarItem({ icon: Icon, label, active = false, to, onClick }: { icon: any; label: string; active?: boolean; to?: string; onClick?: () => void }) {
-  const classes = `justify-start gap-3 rounded-xl ${active ? "bg-teal-50 text-teal-800" : "text-slate-700 hover:bg-slate-50"}`
-  if (to) {
-    return (
-      <Button asChild variant={active ? "secondary" : "ghost"} className={classes}>
-        <Link to={to}>
-          <Icon className="h-5 w-5" /> {label}
-        </Link>
-      </Button>
-    )
-  }
-  return (
-    <Button
-      variant={active ? "secondary" : "ghost"}
-      className={classes}
-      onClick={onClick}
-    >
-      <Icon className="h-5 w-5" /> {label}
-    </Button>
-  )
-}
 
 function Step({ label, active, done }: { label: string; active?: boolean; done?: boolean }) {
   const state = done ? "bg-teal-600" : active ? "bg-teal-400" : "bg-slate-200"

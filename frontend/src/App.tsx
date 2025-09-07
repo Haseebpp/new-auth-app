@@ -14,10 +14,13 @@ import ServiceSelect from "@/pages/orders/ServiceSelect";
 import ScheduleSelect from "@/pages/orders/ScheduleSelect";
 import OrderReview from "@/pages/orders/OrderReview";
 import MyOrders from "@/pages/orders/MyOrders";
+import Subscriptions from "@/pages/Subscriptions";
+import Support from "@/pages/Support";
 
 // --- Example Layout Components ---
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
+import SiteSidebar from "@/components/site/SiteSidebar";
 
 // --- Auth Route Wrappers ---
 function PublicOnlyRoute({ children }: { children: ReactElement }) {
@@ -34,7 +37,12 @@ function ProtectedRoute({ children }: { children: ReactElement }) {
 const AppLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen flex flex-col">
     <SiteHeader />
-    <main className="flex-1 p-4">{children}</main>
+    <div className="flex-1 bg-gradient-to-b from-white to-slate-50">
+      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[240px_1fr]">
+        <SiteSidebar />
+        <main className="min-h-[calc(100vh-8rem)]">{children}</main>
+      </div>
+    </div>
     <SiteFooter />
   </div>
 );
@@ -52,6 +60,10 @@ const router = createBrowserRouter([
   { path: "/orders/new/service", element: <AppLayout><ProtectedRoute><ServiceSelect /></ProtectedRoute></AppLayout> },
   { path: "/orders/new/schedule", element: <AppLayout><ProtectedRoute><ScheduleSelect /></ProtectedRoute></AppLayout> },
   { path: "/orders/new/review", element: <AppLayout><ProtectedRoute><OrderReview /></ProtectedRoute></AppLayout> },
+  // --- Subscriptions ---
+  { path: "/subscriptions", element: <AppLayout><ProtectedRoute><Subscriptions /></ProtectedRoute></AppLayout> },
+  // --- Support & Help (public)
+  { path: "/support", element: <AppLayout><Support /></AppLayout> },
 ]);
 
 // --- App Root ---

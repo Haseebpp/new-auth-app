@@ -33,6 +33,14 @@ export default function SiteHeader() {
           <span className="hidden text-base font-semibold sm:inline">Laundrify</span>
         </Link>
 
+        {/* Main nav */}
+        <nav className="hidden md:flex items-center gap-6 text-sm font-medium ml-6">
+          <Link to="/" className="hover:text-teal-600">Home</Link>
+          <Link to="/orders" className="hover:text-teal-600">Orders</Link>
+          <Link to="/subscriptions" className="hover:text-teal-600">Subscriptions</Link>
+          <Link to="/support" className="hover:text-teal-600">Support</Link>
+        </nav>
+
         <div className="ml-auto hidden items-center gap-3 md:flex">
           {isAuthed && (
             <div className="flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-sm">
