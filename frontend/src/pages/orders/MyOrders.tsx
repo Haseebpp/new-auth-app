@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/utils";
-import { CalendarDays, Clock, XCircle } from "lucide-react";
+import { CalendarDays, Clock, XCircle, PackageOpen } from "lucide-react";
 
 export default function MyOrders() {
   const dispatch = useAppDispatch();
@@ -58,13 +58,25 @@ export default function MyOrders() {
             </Card>
           );
         })}
-        {status === "succeeded" && orders.length === 0 && (
-          <div className="text-gray-600 flex items-center gap-3">
-            <span>No orders yet.</span>
-            <Link to="/orders/new/service">
-              <Button size="sm">New Order</Button>
-            </Link>
-          </div>
+        {orders.length === 0 && status !== "loading" && (
+          <Card className="border-dashed bg-slate-50/60">
+            <CardContent className="py-16">
+              <div className="mx-auto max-w-md text-center">
+                <div className="mx-auto mb-4 grid size-16 place-items-center rounded-2xl bg-white text-slate-400 shadow-sm">
+                  <PackageOpen className="h-8 w-8" />
+                </div>
+                <h2 className="text-lg font-semibold text-slate-800">No orders yet</h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Your laundry queue is squeaky clean. Start a new order and we’ll pick it up in a flash.
+                </p>
+                <div className="mt-5">
+                  <Link to="/orders/new/service">
+                    <Button className="rounded-xl">Start New Order</Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
