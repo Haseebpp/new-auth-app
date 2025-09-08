@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router"
 import { Button } from "@/components/ui/button"
-import { Home, Package, CreditCard, User2, Truck, Settings, LogIn, UserPlus, HelpCircle } from "lucide-react"
+import { Home, Package, CreditCard, User2, Truck, LogIn, UserPlus, HelpCircle } from "lucide-react"
 import { useAppSelector } from "@/state/store"
 
 type Item = {
@@ -20,7 +20,6 @@ export default function SiteSidebar() {
     { label: "Subscriptions", to: "/subscriptions", icon: CreditCard },
     { label: "Support", to: "/support", icon: HelpCircle },
     { label: "Profile", to: "/profile", icon: User2 },
-    { label: "Profile Settings", to: "/profile/edit", icon: Settings },
   ]
 
   const publicItems: Item[] = [
