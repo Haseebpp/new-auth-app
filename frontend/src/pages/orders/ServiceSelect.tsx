@@ -3,11 +3,13 @@ import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import { fetchServices, selectServices, selectServicesStatus } from "@/state/slices/servicesSlice";
 import { setServiceId } from "@/state/slices/bookingSlice";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { cn, formatCurrency, formatMinutes } from "@/lib/utils";
-import { Clock, DollarSign, Info, Search } from "lucide-react";
+import { CheckCircle2, Clock, Info, Search } from "lucide-react";
 
 export default function ServiceSelect() {
   const dispatch = useAppDispatch();
@@ -34,96 +36,110 @@ export default function ServiceSelect() {
   }, [services, query]);
 
   const Skeleton = () => (
-    <Card className="border-gray-200 animate-pulse">
-      <CardContent className="p-4">
-        <div className="h-5 w-40 bg-gray-200 rounded" />
-        <div className="mt-3 h-3 w-3/4 bg-gray-100 rounded" />
+    <Card className="rounded-2xl border-slate-200 shadow-sm animate-pulse">
+      <CardContent className="p-5">
+        <div className="h-5 w-40 rounded bg-slate-200" />
+        <div className="mt-3 h-3 w-3/4 rounded bg-slate-100" />
         <div className="mt-6 flex items-center gap-3">
-          <div className="h-6 w-16 bg-gray-200 rounded" />
-          <div className="h-6 w-20 bg-gray-200 rounded" />
+          <div className="h-6 w-16 rounded bg-slate-200" />
+          <div className="h-6 w-20 rounded bg-slate-200" />
         </div>
-        <div className="mt-6 h-9 w-24 bg-gray-200 rounded" />
+        <div className="mt-6 h-9 w-full rounded bg-slate-200" />
       </CardContent>
     </Card>
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Choose a service</h1>
-      {status === "loading" && (
-        <div className="grid gap-4 md:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} />)}
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
+      <div className="mx-auto w-full max-w-[1100px] px-4 pt-8 pb-16">
+        {/* Header */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Choose a Service</h1>
+            <p className="text-sm text-slate-600">Select from our available wash & detailing services</p>
+          </div>
+          {status === "succeeded" && (
+            <div className="text-sm text-slate-500">{filtered.length} of {services.length} services</div>
+          )}
         </div>
-      )}
-      {status === "failed" && (
-        <div className="flex items-center gap-2 text-red-600 text-sm border border-red-200 bg-red-50 rounded p-3">
-          <Info className="w-4 h-4" />
-          <span>Failed to load services.</span>
-          <Button variant="outline" size="sm" className="ml-auto" onClick={() => dispatch(fetchServices())}>
-            Retry
-          </Button>
-        </div>
-      )}
-      {/* Search + meta */}
-      {status === "succeeded" && services.length > 0 && (
-        <div className="flex items-center justify-between mb-3 gap-3">
-          <div className="relative w-full md:w-80">
-            <input
-              className="w-full border rounded pl-8 pr-3 py-2 text-sm"
-              placeholder="Search services..."
+
+        {/* Loading / Error banners */}
+        {status === "loading" && (
+          <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} />)}
+          </div>
+        )}
+        {status === "failed" && (
+          <div className="mt-4 flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+            <Info className="h-4 w-4" />
+            <span>Failed to load services.</span>
+            <Button variant="outline" size="sm" className="ml-auto rounded-xl" onClick={() => dispatch(fetchServices())}>
+              Retry
+            </Button>
+          </div>
+        )}
+
+        {/* Search */}
+        {status === "succeeded" && services.length > 0 && (
+          <div className="mt-4 relative max-w-sm">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search services..."
+              className="rounded-xl pl-9"
             />
-            <Search className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
           </div>
-          <div className="hidden md:block text-xs text-gray-600">{filtered.length} of {services.length} services</div>
-        </div>
-      )}
-      {status === "succeeded" && services.length === 0 ? (
-        <div className="text-gray-600 text-sm border rounded p-4 bg-gray-50">
-          No services available yet. If you’re developing locally, seed the database with sample services:
-          <pre className="mt-2 text-xs bg-white border rounded p-2">npm run seed:services</pre>
-          <div className="mt-2">Then refresh this page.</div>
-          <div className="mt-3">
-            <Button variant="outline" onClick={() => dispatch(fetchServices())}>Retry</Button>
+        )}
+
+        {status === "succeeded" && services.length === 0 ? (
+          <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            No services available yet. If you’re developing locally, seed the database with sample services:
+            <pre className="mt-2 rounded border bg-slate-50 p-2 text-xs">npm run seed:services</pre>
+            <div className="mt-2">Then refresh this page.</div>
+            <div className="mt-3">
+              <Button variant="outline" className="rounded-xl" onClick={() => dispatch(fetchServices())}>Retry</Button>
+            </div>
           </div>
-        </div>
-      ) : null}
-      <div className="grid gap-4 md:grid-cols-2">
-        {filtered.map((s) => (
-          <Card key={s._id} className={cn("border-gray-200 group hover:shadow-sm transition-shadow cursor-pointer")}
-            onClick={() => onChoose(s._id)}>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center justify-between text-base">
-                <span className="font-semibold">{s.name}</span>
-                <span className="inline-flex items-center gap-1 text-sm text-gray-700">
-                  <DollarSign className="w-4 h-4" />
-                  {formatCurrency(s.price)}
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {s.description ? (
-                <p className="text-sm text-gray-600 line-clamp-2">{s.description}</p>
-              ) : (
-                <p className="text-sm text-gray-500">No description</p>
-              )}
+        ) : null}
 
-              <div className="mt-4 flex items-center gap-2 text-xs text-gray-700">
-                <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-                  <Clock className="w-3.5 h-3.5 mr-1" /> {formatMinutes(s.durationMinutes)}
-                </Badge>
-                <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-                  Active
-                </Badge>
-              </div>
+        <Separator className="my-6" />
 
-              <div className="mt-6">
-                <Button size="sm">Select</Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {/* Services grid */}
+        {status === "succeeded" && services.length > 0 && (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((s) => (
+              <Card
+                key={s._id}
+                className={cn("rounded-2xl border-slate-200 shadow-sm transition hover:shadow-md cursor-pointer")}
+                onClick={() => onChoose(s._id)}
+              >
+                <CardHeader className="flex flex-row items-start justify-between">
+                  <CardTitle className="text-lg">{s.name}</CardTitle>
+                  <div className="text-right font-semibold text-slate-900">{formatCurrency(s.price)}</div>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="mb-3 text-slate-700">
+                    {s.description ? s.description : "No description"}
+                  </CardDescription>
+                  <div className="flex items-center gap-3 text-sm text-slate-600">
+                    <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> {formatMinutes(s.durationMinutes)}</span>
+                    {s.active ? (
+                      <Badge className="rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">Active</Badge>
+                    ) : (
+                      <Badge className="rounded-full border bg-slate-100 text-slate-500">Inactive</Badge>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full gap-2 rounded-xl bg-teal-600 hover:bg-teal-700" onClick={(e) => { e.stopPropagation(); onChoose(s._id); }}>
+                    <CheckCircle2 className="h-4 w-4" /> Select
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

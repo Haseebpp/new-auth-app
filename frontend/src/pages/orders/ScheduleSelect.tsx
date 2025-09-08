@@ -4,13 +4,18 @@ import { useAppDispatch, useAppSelector } from "@/state/store";
 import { selectBooking, setDate, setScheduledAt } from "@/state/slices/bookingSlice";
 import { fetchServices, selectServiceById, fetchServiceSlots, selectSlotsFor, selectSlotsStatus } from "@/state/slices/servicesSlice";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { formatCurrency, formatMinutes } from "@/lib/utils";
-import { CalendarDays, ChevronLeft, ChevronRight, Clock, Info } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, Info } from "lucide-react";
 
 function toISODate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  // Return local YYYY-MM-DD to avoid timezone off-by-one issues
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 export default function ScheduleSelect() {
@@ -52,90 +57,95 @@ export default function ScheduleSelect() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <header className="mb-4">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <div className="mt-2 text-sm text-gray-600">Pick a date and choose an available time slot.</div>
-        {service && (
-          <div className="mt-3 flex items-center gap-2 text-xs">
-            <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-              <Clock className="w-3.5 h-3.5 mr-1" /> {formatMinutes(service.durationMinutes)}
-            </Badge>
-            <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-              {formatCurrency(service.price)}
-            </Badge>
-          </div>
-        )}
-      </header>
-
-      <div className="flex items-center gap-3 mb-3">
-        <Button variant="outline" size="icon" onClick={() => changeDay(-1)}><ChevronLeft className="w-4 h-4" /></Button>
-        <div className="flex items-center gap-2 text-sm">
-          <CalendarDays className="w-4 h-4" />
-          <input
-            type="date"
-            value={localDate}
-            min={toISODate(new Date())}
-            onChange={(e) => setLocalDate(e.target.value)}
-            className="border rounded px-2 py-1 text-sm"
-          />
-        </div>
-        <Button variant="outline" size="icon" onClick={() => changeDay(1)}><ChevronRight className="w-4 h-4" /></Button>
-        <div className="ml-auto text-xs text-gray-500">Times shown in your local timezone</div>
-      </div>
-
-      <Card className="border-gray-200">
-        <CardContent className="py-4">
-          {slotsStatus === "loading" && <div className="text-sm text-gray-600">Loading slots…</div>}
-          {slotsStatus === "failed" && (
-            <div className="flex items-center gap-2 text-red-600 text-sm border border-red-200 bg-red-50 rounded p-3">
-              <Info className="w-4 h-4" />
-              <span>Failed to load slots.</span>
+    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
+      <div className="mx-auto w-full max-w-[900px] px-4 pt-8 pb-16">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+          <p className="text-sm text-slate-600">Pick a date and choose an available time slot</p>
+          {service && (
+            <div className="mt-2 flex items-center gap-4 text-sm text-slate-700">
+              <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-teal-600" /> {formatMinutes(service.durationMinutes)}</span>
+              <span className="font-medium">{formatCurrency(service.price)}</span>
             </div>
           )}
+        </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-            {slots.map((s) => {
-              const dt = new Date(s.start);
-              const label = dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-              return (
-                <Button key={s.start} variant="outline" onClick={() => onChooseSlot(s.start)} className="justify-center">
-                  {label}
-                </Button>
-              );
-            })}
+        {/* Date navigation */}
+        <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+          <Button variant="outline" size="icon" className="rounded-full" onClick={() => changeDay(-1)}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center gap-2 text-slate-800">
+            <CalendarIcon className="h-4 w-4 text-teal-600" />
+            <span className="font-medium">{localDate}</span>
           </div>
+          <Button variant="outline" size="icon" className="rounded-full" onClick={() => changeDay(1)}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
 
-          {slots.length === 0 && slotsStatus === "succeeded" && (
-            <div className="mt-2 text-sm text-gray-600">No slots available for this date. Try another day.</div>
-          )}
+        <p className="mt-2 text-right text-xs text-slate-500">Times shown in your local timezone</p>
 
-          {/* Fallback manual input */}
-          <div className="mt-6">
-            <div className="text-sm mb-2">Or enter a custom date & time:</div>
-            <ManualDateTimePicker onPick={(iso) => onChooseSlot(iso)} />
-          </div>
-        </CardContent>
-      </Card>
+        <Separator className="my-6" />
+
+        {/* Time slots */}
+        <Card className="rounded-2xl border-slate-200 shadow-sm">
+          <CardContent className="p-6">
+            {slotsStatus === "loading" && <div className="text-sm text-slate-600">Loading slots…</div>}
+            {slotsStatus === "failed" && (
+              <div className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+                <Info className="h-4 w-4" />
+                <span>Failed to load slots.</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {slots.map((s) => {
+                const dt = new Date(s.start);
+                const label = dt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                return (
+                  <Button key={s.start} variant="outline" className="rounded-xl" onClick={() => onChooseSlot(s.start)}>
+                    {label}
+                  </Button>
+                );
+              })}
+            </div>
+
+            {slots.length === 0 && slotsStatus === "succeeded" && (
+              <div className="mt-2 text-sm text-slate-600">No slots available for this date. Try another day.</div>
+            )}
+
+            {/* Custom picker */}
+            <div className="mt-6 space-y-3">
+              <p className="text-sm font-medium text-slate-700">Or enter a custom date & time:</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Input type="date" value={localDate} min={toISODate(new Date())} onChange={(e) => setLocalDate(e.target.value)} className="rounded-xl" />
+                <ManualDateTimePicker onPick={(iso) => onChooseSlot(iso)} date={localDate} />
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-between gap-3">
+            <Button variant="outline" className="rounded-xl" onClick={() => navigate("/orders/new/service")}>Back</Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
 
-function ManualDateTimePicker({ onPick }: { onPick: (iso: string) => void }) {
-  const [date, setDate] = useState(toISODate(new Date()));
+function ManualDateTimePicker({ onPick, date }: { onPick: (iso: string) => void; date: string }) {
   const [time, setTime] = useState("09:00");
 
   const onSubmit = () => {
     const d = new Date(`${date}T${time}:00`);
-    // Normalize to ISO; backend expects ISO string
     if (!isNaN(d.getTime())) onPick(d.toISOString());
   };
 
   return (
     <div className="flex items-center gap-2">
-      <input className="border rounded px-2 py-1 text-sm" type="date" value={date} min={toISODate(new Date())} onChange={(e) => setDate(e.target.value)} />
-      <input className="border rounded px-2 py-1 text-sm" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-      <Button variant="outline" onClick={onSubmit}>Use</Button>
+      <Input className="rounded-xl" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+      <Button className="rounded-xl bg-teal-600 hover:bg-teal-700" onClick={onSubmit}>Use</Button>
     </div>
   );
 }
