@@ -60,3 +60,26 @@ export const getServiceSlots = asyncHandler(async (req, res) => {
   res.json({ slots, service: { id: String(service._id), durationMinutes: duration, openHour, closeHour } });
 });
 
+// POST /api/services/seed - development helper to seed default services if none exist
+export const seedDevServices = asyncHandler(async (req, res) => {
+  // Disallow in production for safety
+  if (process.env.NODE_ENV === "production") {
+    return res.status(403).json({ message: "Seeding disabled in production" });
+  }
+
+  const existing = await Service.countDocuments();
+  if (existing > 0) {
+    const services = await Service.find({ active: true }).sort({ name: 1 });
+    return res.status(200).json({ message: `Services already exist (${existing}).`, services });
+  }
+
+  const defaults = [
+    { name: "Basic Wash", description: "Quick exterior wash", durationMinutes: 30, price: 10, active: true },
+    { name: "Full Wash", description: "Exterior + interior cleaning", durationMinutes: 60, price: 25, active: true },
+    { name: "Detailing", description: "Premium detailing service", durationMinutes: 120, price: 80, active: true },
+  ];
+
+  await Service.insertMany(defaults);
+  const services = await Service.find({ active: true }).sort({ name: 1 });
+  return res.status(201).json({ message: `Seeded ${services.length} services.`, services });
+});
