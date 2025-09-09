@@ -58,17 +58,11 @@
     app.use("/api/services", servicesRoutes);
     app.use("/api/orders", ordersRoutes);
 
-    // -----------------------
-    // Error Handling Middleware
-    // -----------------------
-    app.use(notFound);
-    app.use(errorHandler);
-
-    // -----------------------
+   // -----------------------
     // Serve Frontend (Production)
     // -----------------------
     if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "frontend", "dist")));
+    app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
     app.get("*", (req, res) => {
         res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
